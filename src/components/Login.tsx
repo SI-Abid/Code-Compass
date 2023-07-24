@@ -2,14 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "../css/Login.css";
 import { useState } from "react";
-import { auth } from "../../config/firebase";
-import firebase from "firebase";
+import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
+import { auth } from "../../config/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +22,8 @@ export const Login = () => {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
-      const userCredential = await auth.signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
         email,
         password
       );

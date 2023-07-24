@@ -4,13 +4,10 @@ import "../css/Signup.css";
 import { useState } from "react";
 import { validateEmail, validatePassword } from "../validation/UserValidation";
 import { auth, db } from "../../config/firebase";
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import * as firebase from "firebase/app"; 
-import "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 export const Signup = () => {
   const navigate = useNavigate();
@@ -40,12 +37,14 @@ export const Signup = () => {
 
     // TODO: Send email and password to server
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth,
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         email,
         password
       );
-      
-      db.collection("users").doc(userCredential.user?.uid).set({
+      const collRef = collection(db, "users");
+      const docRef = doc(collRef, userCredential.user.uid);
+      await setDoc(docRef, {
         firstName,
         lastName,
         email,
